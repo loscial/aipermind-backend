@@ -4,28 +4,22 @@ from pydantic import BaseModel
 import os
 import logging
 
-# IMPORT OTTIMIZZATI PER RENDERE IL CARICAMENTO DEI MODULI "A PROVA DI ERRORE"
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_community.document_loaders import WebBaseLoader, PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
+
+# Importazioni dirette per bypassare il modulo 'langchain'
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains.retrieval import create_retrieval_chain
 
-# Configurazione logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 class ChatRequest(BaseModel):
     message: str
@@ -35,53 +29,30 @@ rag_chain = None
 @app.on_event("startup")
 async def startup_event():
     global rag_chain
-    if "GOOGLE_API_KEY" not in os.environ:
-        logger.error("GOOGLE_API_KEY mancante!")
-        return
-        
+    if "GOOGLE_API_KEY" not in os.environ: return
     try:
         all_documents = []
-        # Caricamento PDF
-        if os.path.exists("data_pdfs"):
-            all_documents.extend(PyPDFDirectoryLoader("data_pdfs").load())
-        
-        # Caricamento Web
+        if os.path.exists("data_pdfs"): all_documents.extend(PyPDFDirectoryLoader("data_pdfs").load())
         web_loader = WebBaseLoader(["https://app.aipermind.com/strategy-lab", "https://app.aipermind.com/faq"])
         all_documents.extend(web_loader.load())
 
         if all_documents:
             splits = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200).split_documents(all_documents)
-            
-            # Embeddings via Google (leggeri per Render)
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
             vectorstore = FAISS.from_documents(documents=splits, embedding=embeddings)
             retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
             
             llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
-            prompt = ChatPromptTemplate.from_messages([
-                ("system", "Sei l'assistente di aipermind lab. Rispondi basandoti esclusivamente sul contesto: {context}"),
-                ("human", "{input}"),
-            ])
+            prompt = ChatPromptTemplate.from_messages([("system", "Contesto: {context}"), ("human", "{input}")])
             
-            # Creazione catena
-            combine_docs_chain = create_stuff_documents_chain(llm, prompt)
-            rag_chain = create_retrieval_chain(retriever, combine_docs_chain)
-            logger.info("✅ RAG Inizializzato correttamente.")
-            
-    except Exception as e:
-        logger.error(f"Errore inizializzazione: {e}")
+            # Qui usiamo le funzioni direttamente
+            rag_chain = create_retrieval_chain(retriever, create_stuff_documents_chain(llm, prompt))
+    except Exception as e: logger.error(f"Errore: {e}")
 
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest):
-    if rag_chain is None:
-        raise HTTPException(status_code=503, detail="Sistema non ancora pronto.")
-    try:
-        response = rag_chain.invoke({"input": request.message})
-        return {"reply": response["answer"]}
-    except Exception as e:
-        logger.error(f"Errore generazione: {e}")
-        raise HTTPException(status_code=500, detail="Errore elaborazione.")
+    if rag_chain is None: raise HTTPException(status_code=503, detail="Non pronto")
+    return {"reply": rag_chain.invoke({"input": request.message})["answer"]}
 
 @app.get("/")
-def health_check():
-    return {"status": "Operativo"}
+def health_check(): return {"status": "Operativo"}
