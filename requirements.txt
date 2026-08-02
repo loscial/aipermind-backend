@@ -1,7 +1,10 @@
-# ... existing code ...
-langchain-google-genai==0.0.10
-langchain-community==0.0.28
-faiss-cpu==1.8.0
-beautifulsoup4==4.12.3
-pypdf==4.1.0
-sentence-transformers==2.5.1
+fastapi
+uvicorn
+langchain
+langchain-google-genai
+langchain-community
+faiss-cpu
+beautifulsoup4
+pypdf
+sentence-transformers
+pydantic
