@@ -1,10 +1,10 @@
 fastapi
 uvicorn
-langchain
 langchain-core
 langchain-community
 langchain-google-genai
 langchain-text-splitters
+langchain
 faiss-cpu
 beautifulsoup4
 pypdf
