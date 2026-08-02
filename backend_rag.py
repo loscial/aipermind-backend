@@ -4,15 +4,14 @@ from pydantic import BaseModel
 import os
 import logging
 
-# IMPORT CORRETTI E MODERNI (LangChain "spacchettato")
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_community.document_loaders import WebBaseLoader, PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
-# Questi sono i nuovi percorsi corretti per le catene:
+# Carichiamo le catene direttamente dalle loro sotto-librerie moderne
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.chains import create_retrieval_chain
+from langchain.chains.retrieval import create_retrieval_chain
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -40,18 +39,14 @@ async def startup_event():
         return
     try:
         all_documents = []
-        PDF_DIRECTORY = "data_pdfs"
-        if os.path.exists(PDF_DIRECTORY):
-            pdf_loader = PyPDFDirectoryLoader(PDF_DIRECTORY)
-            all_documents.extend(pdf_loader.load())
+        if os.path.exists("data_pdfs"):
+            all_documents.extend(PyPDFDirectoryLoader("data_pdfs").load())
         
-        URLS = ["https://app.aipermind.com/strategy-lab", "https://app.aipermind.com/faq"]
-        web_loader = WebBaseLoader(URLS)
+        web_loader = WebBaseLoader(["https://app.aipermind.com/strategy-lab", "https://app.aipermind.com/faq"])
         all_documents.extend(web_loader.load())
 
         if all_documents:
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-            splits = text_splitter.split_documents(all_documents)
+            splits = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200).split_documents(all_documents)
             embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
             vectorstore = FAISS.from_documents(documents=splits, embedding=embeddings)
             retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
@@ -70,9 +65,8 @@ async def startup_event():
 
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest):
-    if rag_chain is None: raise HTTPException(status_code=503, detail="Non pronto.")
-    response = rag_chain.invoke({"input": request.message})
-    return {"reply": response["answer"]}
+    if rag_chain is None: raise HTTPException(status_code=503, detail="Sistema non pronto.")
+    return {"reply": rag_chain.invoke({"input": request.message})["answer"]}
 
 @app.get("/")
 def health_check(): return {"status": "Operativo"}
