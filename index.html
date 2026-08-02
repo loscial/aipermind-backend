@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>aipermind strategy lab | Centro di Simulazione Strategica</title>
+    <meta name="description" content="aipermind strategy lab: Il Processo di Validazione virtuale per idee e strategie. Deleghi la validazione, ricevi un report tecnico in 7 giorni lavorativi.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        aiper: {
+                            blue: '#1E3A8A',    
+                            lightBlue: '#3B82F6', 
+                            magenta: '#D946EF', 
+                            orange: '#F97316',  
+                            dark: '#0F172A',
+                            gray: '#F8FAFC'
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-pattern': "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%239C92AC\\' fill-opacity=\\'0.05\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #3B82F6, #D946EF, #F97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .hero-bg {
+            background: linear-gradient(180deg, #F8FAFC 0%, #EFF6FF 100%);
+        }
+
+        /* Trusted logos marquee */
+        .trusted-logos-marquee {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 7%, black 93%, transparent);
+        }
+        .trusted-logos-track {
+            display: flex;
+            width: max-content;
+            animation: trustedLogosScroll 34s linear infinite;
+            will-change: transform;
+        }
+        .trusted-logos-marquee:hover .trusted-logos-track {
+            animation-play-state: paused;
+        }
+        .trusted-logos-group {
+            display: flex;
+            align-items: center;
+            gap: clamp(2.5rem, 5vw, 5.5rem);
+            padding-right: clamp(2.5rem, 5vw, 5.5rem);
+        }
+        .trusted-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(8.5rem, 13vw, 11rem);
+            height: 4.5rem;
+            flex: 0 0 auto;
+        }
+        .trusted-logo img {
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 3.25rem;
+            object-fit: contain;
+            filter: grayscale(1);
+            opacity: 0.64;
+            transition: filter 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+        .trusted-logo:hover img {
+            filter: grayscale(0);
+            opacity: 1;
+            transform: scale(1.04);
+        }
+        @keyframes trustedLogosScroll {
+            from { transform: translate3d(0, 0, 0); }
+            to { transform: translate3d(-50%, 0, 0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .trusted-logos-track {
+                animation-play-state: paused;
+            }
+        }
+        
+        /* Form Custom Styles */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .form-step.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .option-card:hover {
+            border-color: #cbd5e1;
+            background-color: #f8fafc;
+        }
+        .option-card.selected {
+            border-color: #3B82F6;
+            background-color: #eff6ff;
+        }
+        .option-radio {
+            display: none;
+        }
+
+        /* --- Testo Rotante CSS --- */
+        .text-rotate-container {
+            display: inline-block;
+            min-width: 300px;
+            text-align: left;
+        }
+        .text-rotate {
+            display: inline-block;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+        }
+        .text-rotate.fade-out {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        /* FAQ Custom Styles */
+        .faq-content {
+            transition: max-height 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        /* --- Animazione Badge in alto --- */
+        .badge-slider {
+            display: grid;
+            grid-template-areas: "testo";
+            align-items: center;
+        }
+        .badge-slider > span {
+            grid-area: testo; /* Sovrappone esattamente i testi */
+            animation: slideFadeBadge 6s infinite;
+            opacity: 0;
+            white-space: nowrap;
+        }
+        .badge-slider > span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .badge-slider > span:nth-child(2) {
+            animation-delay: 3s; /* Parte esattamente a metà ciclo */
+        }
+        @keyframes slideFadeBadge {
+            0% { opacity: 0; transform: translateY(8px); }
+            10% { opacity: 1; transform: translateY(0); }
+            40% { opacity: 1; transform: translateY(0); }
+            50% { opacity: 0; transform: translateY(-8px); }
+            100% { opacity: 0; transform: translateY(-8px); }
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased selection:bg-aiper-magenta selection:text-white">
+
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="assets/logo-aipermind.png" alt="Logo aipermind strategy lab" class="h-16 sm:h-20 w-auto object-contain">
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-5">
+                    <a href="#problema" class="text-sm font-medium text-slate-600 hover:text-aiper-lightBlue transition-colors">Il Problema</a>
+                    <a href="#soluzione" class="text-sm font-medium text-slate-600 hover:text-aiper-lightBlue transition-colors">AI Native Service</a>
+                    <a href="#processo" class="text-sm font-medium text-slate-600 hover:text-aiper-lightBlue transition-colors">Come Funziona</a>
+                    <a href="#faq" class="text-sm font-medium text-slate-600 hover:text-aiper-lightBlue transition-colors">FAQ</a>
+                    <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 text-sm font-semibold rounded-full border border-aiper-lightBlue text-aiper-blue hover:bg-blue-50 transition-all">guarda un caso d'uso</a>
+                    <a href="#contatti" class="px-5 py-2.5 text-sm font-semibold rounded-full bg-aiper-dark text-white hover:bg-aiper-lightBlue transition-all shadow-md hover:shadow-lg">Inizia la Validazione</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-aiper-dark focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white/95 backdrop-blur-md border-b border-slate-100 absolute w-full">
+            <div class="px-4 pt-2 pb-6 space-y-1 shadow-lg">
+                <a href="#problema" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-aiper-lightBlue hover:bg-slate-50 rounded-lg">Il Problema</a>
+                <a href="#soluzione" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-aiper-lightBlue hover:bg-slate-50 rounded-lg">AI Native Service</a>
+                <a href="#processo" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-aiper-lightBlue hover:bg-slate-50 rounded-lg">Come Funziona</a>
+                <a href="#faq" class="block px-3 py-3 text-base font-medium text-slate-700 hover:text-aiper-lightBlue hover:bg-slate-50 rounded-lg">FAQ</a>
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="block px-3 py-3 text-base font-semibold text-aiper-blue hover:bg-blue-50 rounded-lg">guarda un caso d'uso</a>
+                <div class="mt-4 pt-4 border-t border-slate-100 px-3">
+                    <a href="#contatti" class="block w-full text-center px-5 py-3 rounded-xl bg-aiper-dark text-white font-medium hover:bg-aiper-lightBlue transition-colors">Inizia la Validazione</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative pt-32 pb-16 lg:pt-48 lg:pb-24 overflow-hidden hero-bg bg-hero-pattern">
+        <!-- Decorative elements -->
+        <div class="absolute top-1/4 left-0 w-72 h-72 bg-aiper-lightBlue rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-1/3 right-0 w-72 h-72 bg-aiper-magenta rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white shadow-sm border border-slate-200 mb-8 overflow-hidden">
+                <span class="flex h-2 w-2 relative flex-shrink-0">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-aiper-orange opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-aiper-orange"></span>
+                </span>
+                <div class="badge-slider">
+                    <span class="text-sm font-bold text-slate-700 uppercase tracking-wider">AI Native Service</span>
+                    <span class="text-sm font-bold text-aiper-lightBlue uppercase tracking-wider">Impossibile pre 2023</span>
+                </div>
+            </div>
+            
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-aiper-dark mb-6 leading-tight min-h-[140px] md:min-h-[160px] lg:min-h-[180px]">
+                Basta indovinare.<br class="hidden md:block">
+                Il <span class="gradient-text text-rotate" id="rotating-text">Crash Test virtuale</span> per le tue decisioni.
+            </h1>
+            
+            <p class="mt-6 max-w-3xl mx-auto text-xl text-slate-600 leading-relaxed">
+                <strong>Deleghi l'intera validazione</strong> alla nostra infrastruttura e ricevi un parere tecnico asettico in <strong class="text-aiper-dark">7 giorni lavorativi</strong>.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#contatti" class="px-8 py-4 text-base font-semibold rounded-full bg-aiper-dark text-white hover:bg-aiper-lightBlue hover:shadow-xl hover:shadow-aiper-lightBlue/30 transition-all duration-300 flex items-center justify-center gap-2">
+                    Richiedi un'Analisi <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+                <a href="#soluzione" class="px-8 py-4 text-base font-semibold rounded-full bg-white text-aiper-dark border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all duration-300 flex items-center justify-center">
+                    Esplora il servizio
+                </a>
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="px-8 py-4 text-base font-semibold rounded-full border border-aiper-lightBlue bg-blue-50 text-aiper-blue hover:bg-aiper-lightBlue hover:text-white hover:shadow-xl hover:shadow-aiper-lightBlue/20 transition-all duration-300 flex items-center justify-center gap-2">
+                    guarda un caso d'uso <i class="fas fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative overflow-hidden border-y border-slate-200 bg-white py-10 sm:py-12" aria-labelledby="trusted-logos-title">
+        <div class="mb-7 px-4 text-center sm:mb-9">
+            <h2 id="trusted-logos-title" class="text-xs font-bold uppercase tracking-[0.28em] text-slate-400">già scelti da</h2>
+        </div>
+
+        <div class="trusted-logos-marquee" aria-label="Aziende e organizzazioni che ci hanno scelto">
+            <div class="trusted-logos-track">
+                <div class="trusted-logos-group">
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bticino.png" alt="BTicino"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lavazza.png" alt="Lavazza"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/politecnico.png" alt="Politecnico di Milano"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lactalis.png" alt="Lactalis"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bnp-paribas.png" alt="BNP Paribas"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/djungle.png" alt="Djungle Studio"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lazio-innova.png" alt="Lazio Innova"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/generali.png" alt="Generali"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/iren.png" alt="Iren"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bper.png" alt="BPER Banca"></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/illy.png" alt="Illy"></div>
+                </div>
+                <div class="trusted-logos-group" aria-hidden="true">
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bticino.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lavazza.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/politecnico.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lactalis.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bnp-paribas.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/djungle.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/lazio-innova.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/generali.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/iren.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/bper.png" alt=""></div>
+                    <div class="trusted-logo"><img src="assets/trusted-logos/illy.png" alt=""></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="bg-aiper-dark py-6 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-center gap-6 md:gap-12 text-sm sm:text-base text-slate-300 font-medium">
+                <div class="flex items-center gap-2"><i class="fas fa-bolt text-aiper-lightBlue"></i> Validazione da €5.000</div>
+                <div class="flex items-center gap-2"><i class="fas fa-clock text-aiper-magenta"></i> Consegna in 7 giorni</div>
+                <div class="flex items-center gap-2"><i class="fas fa-file-signature text-aiper-orange"></i> Accordo di Riservatezza (NDA)</div>
+                <div class="flex items-center gap-2"><i class="fas fa-shield-alt text-green-400"></i> Zero-Trust e Cancellazione a 14 giorni</div>
+            </div>
+        </div>
+    </div>
+
+    <section id="problema" class="py-24 bg-white relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-base text-aiper-orange font-semibold tracking-wide uppercase mb-2">La fine dei Tentativi ed Errori</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-aiper-dark">Per chi misura il capitale di rischio prima di stanziare i fondi.</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Problem 1 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden border border-slate-100 bg-slate-50">
+                    <div class="gradient-text mb-3 text-2xl font-extrabold tracking-[0.16em]">BASTA</div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Interviste Lente e Distorte</h4>
+                    <p class="text-slate-600">Le interviste qualitative ai clienti sono necessarie ma estremamente lente, costose da condurre e spesso distorte da inevitabili pregiudizi umani.</p>
+                </div>
+
+                <!-- Problem 2 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden border border-slate-100 bg-slate-50">
+                    <div class="gradient-text mb-3 text-2xl font-extrabold tracking-[0.16em]">BASTA</div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Alto Rischio Finanziario</h4>
+                    <p class="text-slate-600">Il rischio finanziario derivante dal lancio sul mercato di idee, prodotti o strategie non adeguatamente convalidate è altissimo.</p>
+                </div>
+
+                <!-- Problem 3 -->
+                <div class="glass-card p-8 rounded-2xl relative overflow-hidden border border-slate-100 bg-slate-50">
+                    <div class="gradient-text mb-3 text-2xl font-extrabold tracking-[0.16em]">BASTA</div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Colli di Bottiglia</h4>
+                    <p class="text-slate-600">Processi di validazione tradizionali troppo lenti riducono drasticamente la generazione di nuove opportunità e ritardano i tempi di lancio sul mercato.</p>
+                </div>
+            </div>
+            <div class="mt-12 flex justify-center">
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-aiper-dark px-7 py-3.5 font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-aiper-lightBlue hover:shadow-xl">
+                    guarda un caso d'uso <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="soluzione" class="py-24 bg-slate-50 relative overflow-hidden border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-base text-aiper-lightBlue font-semibold tracking-wide uppercase mb-2">Consulenza Avanzata</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-aiper-dark mb-6">Tu fornisci il contesto. <br>Noi eseguiamo la validazione.</h3>
+                    
+                    <p class="text-lg text-slate-600 mb-6 leading-relaxed">
+                        A differenza dei classici software in abbonamento (SaaS) che richiedono mesi di formazione iniziale e curve di apprendimento, lo <strong>Strategy Lab è un "AI Native Service"</strong>.
+                    </p>
+                    <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                        I nostri <strong class="text-aiper-dark">Ingegneri di Validazione</strong> prendono in carico la tua idea. Costruiscono i Gemelli Digitali dei tuoi clienti target, lanciano migliaia di interazioni sulla nostra piattaforma di simulazione e ti restituiscono un parere tecnico asettico.
+                    </p>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-aiper-blue text-white flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <span class="ml-3 text-slate-700 font-medium">Nessun software da imparare o gestire.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-aiper-blue text-white flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <span class="ml-3 text-slate-700 font-medium">Riservatezza assoluta: Policy Zero-Trust.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-aiper-blue text-white flex items-center justify-center mt-1">
+                                <i class="fas fa-check text-xs"></i>
+                            </div>
+                            <span class="ml-3 text-slate-700 font-medium">Rapporto direzionale pronto in 7 giorni lavorativi.</span>
+                        </li>
+                    </ul>
+                    <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-aiper-dark px-7 py-3.5 font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-aiper-lightBlue hover:shadow-xl">
+                        guarda un caso d'uso <i class="fas fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+                
+                <div class="relative">
+                    <div class="aspect-[4/3] rounded-2xl bg-white p-8 shadow-2xl relative overflow-hidden border border-slate-200">
+                        <div class="absolute inset-0 bg-slate-50/50"></div>
+                        <div class="relative h-full w-full flex flex-col justify-between z-10">
+                            <div class="flex justify-between items-start border-b border-slate-200 pb-4">
+                                <div>
+                                    <h4 class="text-xl font-bold text-aiper-dark">Ciclo di Validazione</h4>
+                                    <p class="text-sm text-slate-500">Status: <span class="text-green-500 font-semibold">In Esecuzione</span></p>
+                                </div>
+                                <div class="w-10 h-10 bg-aiper-lightBlue/10 text-aiper-lightBlue rounded-full flex items-center justify-center text-xl">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="py-6 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                                    <div class="text-sm text-slate-600 flex-1">Generazione Gemelli Digitali (Alta Fedeltà)</div>
+                                    <div class="text-xs font-mono text-slate-400">100%</div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-2 h-2 rounded-full bg-aiper-orange animate-pulse"></div>
+                                    <div class="text-sm text-slate-600 flex-1">Simulazione Interazioni sui Prezzi</div>
+                                    <div class="text-xs font-mono text-slate-400">68%</div>
+                                </div>
+                                <div class="flex items-center gap-3 opacity-50">
+                                    <div class="w-2 h-2 rounded-full bg-slate-300"></div>
+                                    <div class="text-sm text-slate-600 flex-1">Elaborazione Rapporto Tecnico</div>
+                                    <div class="text-xs font-mono text-slate-400">0%</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-slate-200 flex justify-between items-center">
+                                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Infrastruttura</span>
+                                <span class="text-sm font-bold text-aiper-dark"><i class="fas fa-lock text-aiper-magenta mr-1"></i> Cloud Privato</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="processo" class="py-24 bg-white relative border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-base text-aiper-magenta font-semibold tracking-wide uppercase mb-2">Come Funziona</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-aiper-dark">Dall'idea al parere tecnico in 3 step</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-slate-200 z-0"></div>
+
+                <!-- Step 1 -->
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-white border-4 border-slate-100 rounded-full flex items-center justify-center text-2xl text-aiper-blue font-bold shadow-xl mb-6">
+                        1
+                    </div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Fase Iniziale e Riservatezza</h4>
+                    <p class="text-slate-600">Firmiamo un Accordo di Riservatezza (NDA) immediato. Ci fornisci la documentazione sintetica sul tuo contesto aziendale, mercato e ipotesi tramite un modulo sicuro.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-aiper-lightBlue border-4 border-white rounded-full flex items-center justify-center text-2xl text-white font-bold shadow-xl mb-6 shadow-aiper-lightBlue/30">
+                        2
+                    </div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Fase Esecutiva</h4>
+                    <p class="text-slate-600">Gli Ingegneri di Validazione avviano il ciclo. Costruiscono i gemelli digitali, testano i problemi (dove competere) e ottimizzano le soluzioni.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-aiper-dark border-4 border-white rounded-full flex items-center justify-center text-2xl text-white font-bold shadow-xl mb-6">
+                        <i class="fas fa-flag-checkered"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-aiper-dark mb-3">Consegna Report</h4>
+                    <p class="text-slate-600">Entro 7 giorni ricevi il Rapporto Tecnico di Validazione. Riscontri strutturati per decidere con sicurezza, valutarne l'attrattiva per gli investitori e abbattere il rischio.</p>
+                </div>
+            </div>
+            <div class="mt-14 flex justify-center">
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full border border-aiper-lightBlue bg-blue-50 px-7 py-3.5 font-semibold text-aiper-blue transition-all hover:-translate-y-0.5 hover:bg-aiper-lightBlue hover:text-white hover:shadow-xl">
+                    guarda un caso d'uso <i class="fas fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 bg-slate-50 relative border-t border-slate-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-base text-aiper-blue font-semibold tracking-wide uppercase mb-2">Domande Frequenti</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-aiper-dark">Tutto quello che devi sapere sullo Strategy Lab</h3>
+            </div>
+
+            <div class="space-y-4" id="faq-container">
+                <!-- FAQ Item 1 -->
+                <div class="border border-slate-200 rounded-xl bg-white transition-all duration-200 shadow-sm">
+                    <button class="flex justify-between items-center w-full p-6 text-left focus:outline-none faq-toggle rounded-xl hover:bg-slate-50 transition-colors">
+                        <span class="font-semibold text-aiper-dark text-lg pr-4">Cos'è l'"IA Verticale" e perché è fondamentale per la validazione?</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 transition-transform duration-300 faq-icon-container">
+                            <i class="fas fa-chevron-down text-slate-500"></i>
+                        </div>
+                    </button>
+                    <div class="faq-content">
+                        <div class="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-100 mt-2">
+                            L'IA Verticale si riferisce a sistemi progettati con conoscenze profonde e specializzate, catene di ragionamento e grafi di conoscenza per un dominio specifico, piuttosto che una conoscenza generale. Per i processi di innovazione e validazione, l'IA Verticale è cruciale perché si tratta di discipline altamente specializzate. La nostra infrastruttura incorpora metodologie specifiche e controlli contestuali per garantire l'affidabilità dei risultati, fornire ragionamenti tracciabili e prevenire "allucinazioni" che porterebbero a errori costosi.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="border border-slate-200 rounded-xl bg-white transition-all duration-200 shadow-sm">
+                    <button class="flex justify-between items-center w-full p-6 text-left focus:outline-none faq-toggle rounded-xl hover:bg-slate-50 transition-colors">
+                        <span class="font-semibold text-aiper-dark text-lg pr-4">In che modo l'approccio a "Simulazione" rivoluziona lo sviluppo sul mercato?</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 transition-transform duration-300 faq-icon-container">
+                            <i class="fas fa-chevron-down text-slate-500"></i>
+                        </div>
+                    </button>
+                    <div class="faq-content">
+                        <div class="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-100 mt-2">
+                            Le tradizionali interviste qualitative ai clienti sono necessarie ma estremamente lente, costose e spesso distorte da inevitabili pregiudizi umani. Il nostro approccio a simulazione utilizza Gemelli Digitali (Digital Twins) per replicare il comportamento dei tuoi clienti e concorrenti. Questo ci permette di eseguire migliaia di interazioni asettiche in pochissimi giorni, restituendoti dati strutturati per prendere decisioni rapide e abbattere il rischio finanziario.
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- FAQ Item 3 -->
+                <div class="border border-slate-200 rounded-xl bg-white transition-all duration-200 shadow-sm">
+                    <button class="flex justify-between items-center w-full p-6 text-left focus:outline-none faq-toggle rounded-xl hover:bg-slate-50 transition-colors">
+                        <span class="font-semibold text-aiper-dark text-lg pr-4">Come viene garantita la privacy dei dati aziendali?</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 transition-transform duration-300 faq-icon-container">
+                            <i class="fas fa-chevron-down text-slate-500"></i>
+                        </div>
+                    </button>
+                    <div class="faq-content">
+                        <div class="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-100 mt-2">
+                            Operiamo in un ambiente cloud privato isolato. Adottiamo una rigida politica Zero-Trust: firmiamo un Accordo di Riservatezza (NDA) prima di iniziare qualsiasi attività e garantiamo la cancellazione sicura e definitiva di tutti i tuoi dati, contesti e simulazioni entro 14 giorni dalla consegna del report tecnico finale.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="border border-slate-200 rounded-xl bg-white transition-all duration-200 shadow-sm">
+                    <button class="flex justify-between items-center w-full p-6 text-left focus:outline-none faq-toggle rounded-xl hover:bg-slate-50 transition-colors">
+                        <span class="font-semibold text-aiper-dark text-lg pr-4">Siete semplicemente un "involucro" (Wrapper) di ChatGPT?</span>
+                        <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 transition-transform duration-300 faq-icon-container">
+                            <i class="fas fa-chevron-down text-slate-500"></i>
+                        </div>
+                    </button>
+                    <div class="faq-content">
+                        <div class="p-6 pt-0 text-slate-600 leading-relaxed border-t border-slate-100 mt-2">
+                            Assolutamente no. A differenza delle IA generaliste come ChatGPT, l'infrastruttura di aipermind è una piattaforma multi-agente complessa. Non ci limitiamo a generare testo, ma utilizziamo Gemelli Digitali Scientifici per simulare catene di ragionamento e comportamenti comportamentali complessi legati a uno specifico mercato. Questo costituisce il nostro vantaggio competitivo e garantisce risposte professionali di altissimo livello.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 flex justify-center">
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-aiper-dark px-7 py-3.5 font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-aiper-lightBlue hover:shadow-xl">
+                    guarda un caso d'uso <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contatti" class="py-24 bg-white border-t border-slate-200">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-aiper-dark mb-4">Vuoi valutare una Validazione per il tuo team?</h2>
+                <p class="text-lg text-slate-600">Rispondi a poche domande sul tuo caso d'uso per ricevere i dettagli operativi e un caso studio rilevante via email.</p>
+                <a href="https://app.aipermind.com/projects/project/shared/gWJqskHnl4Q0TColWqEMn4qjs0ZVv7n3wVY2a-_Ilzs" target="_blank" rel="noopener noreferrer" class="mt-7 inline-flex items-center justify-center gap-2 rounded-full border border-aiper-lightBlue bg-blue-50 px-7 py-3.5 font-semibold text-aiper-blue transition-all hover:-translate-y-0.5 hover:bg-aiper-lightBlue hover:text-white hover:shadow-xl">
+                    guarda un caso d'uso <i class="fas fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+            </div>
+            
+            <div class="bg-white p-8 md:p-10 rounded-2xl shadow-xl border border-slate-100">
+                <!-- Progress Bar -->
+                <div class="mb-8 relative">
+                    <div class="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-slate-100">
+                        <div id="form-progress" style="width: 25%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-aiper-lightBlue transition-all duration-500"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-slate-400 font-medium px-1">
+                        <span>Ruolo</span>
+                        <span>Contesto</span>
+                        <span>Obiettivo</span>
+                        <span>Contatto</span>
+                    </div>
+                </div>
+
+                <form id="qualification-form" onsubmit="event.preventDefault(); handleFormSubmit();">
+                    
+                    <!-- Step 1: Ruolo -->
+                    <div class="form-step active" id="step-1">
+                        <h3 class="text-xl font-bold text-aiper-dark mb-4">Qual è il tuo ruolo principale?</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="option-card" onclick="selectOption(this, 'role')">
+                                <input type="radio" name="role" value="founder" class="option-radio" required>
+                                <div class="font-semibold text-aiper-dark mb-1"><i class="fas fa-rocket text-aiper-magenta mr-2"></i> Fondatore / Dirigente</div>
+                                <div class="text-sm text-slate-500">Startup o azienda in crescita</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'role')">
+                                <input type="radio" name="role" value="product" class="option-radio">
+                                <div class="font-semibold text-aiper-dark mb-1"><i class="fas fa-box-open text-aiper-lightBlue mr-2"></i> Sviluppo Prodotto / Innovazione</div>
+                                <div class="text-sm text-slate-500">Gestione Ricerca & Sviluppo (R&D) e lanci</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'role')">
+                                <input type="radio" name="role" value="corporate" class="option-radio">
+                                <div class="font-semibold text-aiper-dark mb-1"><i class="fas fa-building text-aiper-orange mr-2"></i> Azienda Strutturata / Investitori</div>
+                                <div class="text-sm text-slate-500">Gestione fondi e acquisizioni</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'role')">
+                                <input type="radio" name="role" value="other" class="option-radio">
+                                <div class="font-semibold text-aiper-dark mb-1"><i class="fas fa-user text-slate-400 mr-2"></i> Altro</div>
+                                <div class="text-sm text-slate-500">Consulente, Accademico, ecc.</div>
+                            </label>
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button type="button" onclick="nextStep(2)" class="px-6 py-2.5 rounded-xl bg-aiper-dark text-white font-medium hover:bg-aiper-blue transition-colors">Avanti <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Contesto -->
+                    <div class="form-step" id="step-2">
+                        <h3 class="text-xl font-bold text-aiper-dark mb-4">Cosa intendi sottoporre al Crash Test?</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <label class="option-card" onclick="selectOption(this, 'context')">
+                                <input type="radio" name="context" value="new_idea" class="option-radio" required>
+                                <div class="font-semibold text-aiper-dark">Una nuova idea / Startup prima di investire capitale</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'context')">
+                                <input type="radio" name="context" value="new_feature" class="option-radio">
+                                <div class="font-semibold text-aiper-dark">Un nuovo prodotto o funzionalità in un mercato esistente</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'context')">
+                                <input type="radio" name="context" value="strategy" class="option-radio">
+                                <div class="font-semibold text-aiper-dark">Una decisione strategica (es. variazione dei prezzi)</div>
+                            </label>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button type="button" onclick="prevStep(1)" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Indietro</button>
+                            <button type="button" onclick="nextStep(3)" class="px-6 py-2.5 rounded-xl bg-aiper-dark text-white font-medium hover:bg-aiper-blue transition-colors">Avanti <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Obiettivo -->
+                    <div class="form-step" id="step-3">
+                        <h3 class="text-xl font-bold text-aiper-dark mb-4">Qual è l'urgenza di validazione?</h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <label class="option-card" onclick="selectOption(this, 'challenge')">
+                                <input type="radio" name="challenge" value="high" class="option-radio" required>
+                                <div class="font-semibold text-aiper-dark">Alta (Entro 30 giorni)</div>
+                                <div class="text-sm text-slate-500 mt-1">Dobbiamo stanziare fondi a breve e ci serve la certezza di un parere in 7 giorni.</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'challenge')">
+                                <input type="radio" name="challenge" value="medium" class="option-radio">
+                                <div class="font-semibold text-aiper-dark">Media (1-3 mesi)</div>
+                                <div class="text-sm text-slate-500 mt-1">Stiamo raccogliendo dati e pianificando le prossime decisioni strategiche.</div>
+                            </label>
+                            <label class="option-card" onclick="selectOption(this, 'challenge')">
+                                <input type="radio" name="challenge" value="low" class="option-radio">
+                                <div class="font-semibold text-aiper-dark">Bassa (Solo informazione)</div>
+                                <div class="text-sm text-slate-500 mt-1">Voglio solo capire meglio la metodologia aipermind per il futuro.</div>
+                            </label>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button type="button" onclick="prevStep(2)" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Indietro</button>
+                            <button type="button" onclick="nextStep(4)" class="px-6 py-2.5 rounded-xl bg-aiper-dark text-white font-medium hover:bg-aiper-blue transition-colors">Avanti <i class="fas fa-arrow-right ml-2"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Contatto -->
+                    <div class="form-step" id="step-4">
+                        <div class="text-center mb-6">
+                            <div class="inline-flex items-center justify-center w-16 h-16 bg-aiper-lightBlue/10 text-aiper-lightBlue rounded-full mb-4">
+                                <i class="fas fa-unlock-alt text-2xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-aiper-dark mb-2">Ultimo step per sbloccare i materiali.</h3>
+                            <p class="text-slate-600">Inserisci la tua email professionale per ricevere i dettagli sui costi dei test e i casi studio rilevanti.</p>
+                        </div>
+                        
+                        <div class="space-y-4 max-w-md mx-auto">
+                            <div>
+                                <label for="nome" class="block text-sm font-medium text-slate-700 mb-1">Nome e Cognome</label>
+                                <input type="text" id="nome" name="nome" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-aiper-lightBlue focus:border-aiper-lightBlue outline-none transition-all">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email Aziendale</label>
+                                <input type="email" id="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-aiper-lightBlue focus:border-aiper-lightBlue outline-none transition-all">
+                            </div>
+                            <div>
+                                <label for="azienda" class="block text-sm font-medium text-slate-700 mb-1">Azienda (Opzionale)</label>
+                                <input type="text" id="azienda" name="azienda" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-aiper-lightBlue focus:border-aiper-lightBlue outline-none transition-all">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 flex justify-between max-w-md mx-auto">
+                            <button type="button" onclick="prevStep(3)" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 font-medium hover:bg-slate-200 transition-colors"><i class="fas fa-arrow-left mr-2"></i> Indietro</button>
+                            <button type="submit" class="px-8 py-3 rounded-xl bg-aiper-dark text-white font-bold hover:bg-aiper-blue transition-colors shadow-lg shadow-aiper-dark/20 flex items-center">
+                                Invia Richiesta <i class="fas fa-paper-plane ml-2"></i>
+                            </button>
+                        </div>
+                        <p class="text-xs text-center text-slate-500 mt-4 max-w-md mx-auto">Cliccando su Invia, accetti la Policy Zero-Trust. I tuoi dati non verranno mai utilizzati per addestrare modelli.</p>
+                    </div>
+
+                    <!-- Success Message (Hidden initially) -->
+                    <div id="form-success" class="hidden text-center py-8">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-green-100 text-green-600 rounded-full mb-6">
+                            <i class="fas fa-check-circle text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-aiper-dark mb-4">Richiesta ricevuta.</h3>
+                        <p class="text-lg text-slate-600 mb-6">Controlla la tua casella di posta aziendale. Ti stiamo inviando la Presentazione dello Strategy Lab e i casi studio richiesti.</p>
+                        <button type="button" onclick="resetForm()" class="px-6 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition-colors">Torna alla Home</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-50 border-t border-slate-200 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-sm text-slate-500 text-center md:text-left flex flex-col">
+                    <span>&copy; <script>document.write(new Date().getFullYear())</script> aipermind. Tutti i diritti riservati.</span>
+                    <span class="text-xs mt-1">Strategy Lab — AI Native Service</span>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-slate-400 hover:text-aiper-dark transition-colors">
+                        <span class="sr-only">LinkedIn</span>
+                        <i class="fab fa-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AIPERMIND CHATBOT WIDGET -->
+    <div id="aipermind-chatbot-root"></div>
+
+    <style>
+      .ap-widget-btn {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+      }
+      .ap-widget-btn:hover { transform: scale(1.08); }
+      .ap-widget-box {
+        position: fixed;
+        right: 24px;
+        bottom: 92px;
+        width: 380px;
+        max-width: calc(100vw - 32px);
+        height: 540px;
+        max-height: calc(100vh - 120px);
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+        border: 1px solid #e2e8f0;
+        z-index: 999999;
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+      .ap-widget-header {
+        background-color: #2563eb;
+        color: #ffffff;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .ap-widget-body {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        background: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .ap-widget-msg {
+        max-width: 85%;
+        padding: 10px 14px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .ap-msg-bot { background: #ffffff; color: #1e293b; align-self: flex-start; border: 1px solid #e2e8f0; }
+      .ap-msg-user { background: #2563eb; color: #ffffff; align-self: flex-end; }
+      .ap-widget-footer { padding: 12px; background: #ffffff; border-top: 1px solid #e2e8f0; display: flex; gap: 8px; }
+      .ap-widget-input { flex: 1; border: 1px solid #cbd5e1; border-radius: 20px; padding: 8px 14px; font-size: 14px; outline: none; }
+      .ap-widget-send { background: #2563eb; color: white; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; }
+    </style>
+
+    <div class="ap-widget-box" id="apWidgetBox">
+      <div class="ap-widget-header">
+        <div>
+          <div style="font-weight: 600; font-size: 15px;">🤖 Aipermind Lab</div>
+          <div style="font-size: 11px; opacity: 0.85;">Assistente Ufficiale Aipermind</div>
+        </div>
+        <button onclick="document.getElementById('apWidgetBox').style.display='none'" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;">&times;</button>
+      </div>
+      <div class="ap-widget-body" id="apWidgetBody">
+        <div class="ap-widget-msg ap-msg-bot">Questo modulo è direttamente interfacciato con i repository tecnici e la documentazione ufficiale. L'infrastruttura è configurata per l'analisi semantica e il recupero puntuale dei dati dai file sorgente.
+
+    Puoi interrogare il sistema su specifiche specifiche tecniche, parametri, metriche o architetture presenti nei documenti: inserisci pure qualsiasi richiesta o caso d'uso dettagliato.</div>
+      </div>
+      <div class="ap-widget-footer">
+        <input type="text" id="apWidgetInput" class="ap-widget-input" placeholder="Scrivi una domanda..." onkeypress="if(event.key==='Enter') sendApMessage()" />
+        <button onclick="sendApMessage()" class="ap-widget-send">➔</button>
+      </div>
+    </div>
+
+    <button class="ap-widget-btn" onclick="const b=document.getElementById('apWidgetBox'); b.style.display = b.style.display==='flex'?'none':'flex'">
+      💬
+    </button>
+
+    <script>
+      async function sendApMessage() {
+        const input = document.getElementById('apWidgetInput');
+        const body = document.getElementById('apWidgetBody');
+        const text = input.value.trim();
+        if (!text) return;
+
+        // User message
+        const userDiv = document.createElement('div');
+        userDiv.className = 'ap-widget-msg ap-msg-user';
+        userDiv.textContent = text;
+        body.appendChild(userDiv);
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
+
+        // Loading indicator
+        const botDiv = document.createElement('div');
+        botDiv.className = 'ap-widget-msg ap-msg-bot';
+        botDiv.textContent = '...';
+        body.appendChild(botDiv);
+        body.scrollTop = body.scrollHeight;
+
+        try {
+          const res = await fetch('https://ais-dev-l4vpbschwaimg35b5qchdl-941810944851.europe-west2.run.app/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: text,
+              botName: "Aipermind Lab",
+              strictGrounding: true,
+              fallbackMessage: "Mi dispiace, ma non trovo questa informazione nei documenti ufficiali. Ti invito a contattarci direttamente per maggiori dettagli."
+            })
+          });
+          const data = await res.json();
+          botDiv.textContent = data.text || "Mi dispiace, ma non trovo questa informazione nei documenti ufficiali. Ti invito a contattarci direttamente per maggiori dettagli.";
+        } catch(e) {
+          botDiv.textContent = "Mi dispiace, ma non trovo questa informazione nei documenti ufficiali. Ti invito a contattarci direttamente per maggiori dettagli.";
+        }
+        body.scrollTop = body.scrollHeight;
+      }
+    </script>
+    <!-- END AIPERMIND CHATBOT WIDGET -->
+
+    <script>
+        // --- Navbar Scroll Effect ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                nav.classList.add('shadow-md');
+            } else {
+                nav.classList.remove('shadow-md');
+            }
+        });
+
+        // --- Mobile Menu Toggle ---
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Chiudi il menu mobile quando si clicca un link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+
+        // --- Multi-step Form Logic ---
+        function selectOption(element, groupName) {
+            // Deseleziona le altre opzioni nello stesso gruppo
+            const cards = document.querySelectorAll(`input[name="${groupName}"]`);
+            cards.forEach(radio => {
+                radio.parentElement.classList.remove('selected');
+            });
+            // Seleziona la carta cliccata
+            element.classList.add('selected');
+            element.querySelector('input').checked = true;
+        }
+
+        function nextStep(step) {
+            // Basic validation for the previous step
+            const prevStepNum = step - 1;
+            let isValid = false;
+            
+            if (prevStepNum === 1) isValid = document.querySelector('input[name="role"]:checked') !== null;
+            if (prevStepNum === 2) isValid = document.querySelector('input[name="context"]:checked') !== null;
+            if (prevStepNum === 3) isValid = document.querySelector('input[name="challenge"]:checked') !== null;
+
+            if (!isValid) {
+                // Potresti mostrare un avviso qui, o scuotere la card
+                const currentCards = document.querySelectorAll(`#step-${prevStepNum} .option-card`);
+                currentCards.forEach(c => {
+                    c.style.borderColor = '#ef4444'; // Red border temporarily
+                    setTimeout(() => c.style.borderColor = '', 1000);
+                });
+                return;
+            }
+
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            const progress = ((step - 1) / 3) * 100;
+            document.getElementById('form-progress').style.width = `${progress}%`;
+        }
+
+        function prevStep(step) {
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            const progress = ((step - 1) / 3) * 100;
+            document.getElementById('form-progress').style.width = `${progress}%`;
+        }
+
+        function handleFormSubmit() {
+            // Nascondi il form e mostra il messaggio di successo
+            document.querySelectorAll('.form-step').forEach(el => el.style.display = 'none');
+            document.querySelector('.mb-8.relative').style.display = 'none'; // Nasconde la progress bar
+            document.getElementById('form-success').classList.remove('hidden');
+            document.getElementById('form-success').classList.add('block', 'animate-[fadeIn_0.5s_ease]');
+            
+            // Qui andrebbe inserito il codice per inviare i dati al server (es. fetch API verso Make/Zapier)
+        }
+
+        function resetForm() {
+            document.getElementById('qualification-form').reset();
+            document.querySelectorAll('.option-card').forEach(el => el.classList.remove('selected'));
+            
+            document.getElementById('form-success').classList.remove('block');
+            document.getElementById('form-success').classList.add('hidden');
+            
+            document.querySelector('.mb-8.relative').style.display = 'block';
+            
+            document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('form-progress').style.width = '25%';
+        }
+
+        // --- Rotating Text Hero ---
+        const phrases = [
+            "Crash Test virtuale",
+            "Banco di prova sicuro",
+            "Simulatore asettico",
+            "Validatore",
+            "Test finanziario"
+        ];
+        
+        const rotatingText = document.getElementById('rotating-text');
+        let currentPhraseIndex = 0;
+
+        function rotateText() {
+            // Fade out
+            rotatingText.classList.add('fade-out');
+            
+            setTimeout(() => {
+                // Change text
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                rotatingText.textContent = phrases[currentPhraseIndex];
+                
+                // Fade in
+                rotatingText.classList.remove('fade-out');
+            }, 400); // Wait for fade out transition (0.4s)
+        }
+
+        // Inizia la rotazione dopo 3 secondi
+        setInterval(rotateText, 3500);
+
+        // --- FAQ Accordion Logic ---
+        document.querySelectorAll('.faq-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const iconContainer = button.querySelector('.faq-icon-container');
+                const icon = iconContainer.querySelector('i');
+                const isOpen = content.style.maxHeight;
+
+                // Chiude tutte le altre FAQ
+                document.querySelectorAll('.faq-content').forEach(item => {
+                    item.style.maxHeight = null;
+                });
+                document.querySelectorAll('.faq-toggle').forEach(btn => {
+                    btn.classList.remove('bg-slate-50', 'text-aiper-blue');
+                });
+                document.querySelectorAll('.faq-icon-container i').forEach(i => {
+                    i.style.transform = 'rotate(0deg)';
+                });
+                document.querySelectorAll('.faq-icon-container').forEach(c => {
+                    c.classList.remove('bg-aiper-lightBlue', 'text-white');
+                    c.classList.add('bg-slate-100', 'text-slate-500');
+                });
+
+                // Apre quella cliccata se non era già aperta
+                if (!isOpen) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    button.classList.add('bg-slate-50', 'text-aiper-blue');
+                    
+                    icon.style.transform = 'rotate(180deg)';
+                    iconContainer.classList.remove('bg-slate-100', 'text-slate-500');
+                    iconContainer.classList.add('bg-aiper-lightBlue', 'text-white');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
