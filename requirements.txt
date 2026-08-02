@@ -1,9 +1,9 @@
 fastapi
-uvicorn
-langchain
-langchain-google-genai
-langchain-community
-faiss-cpu
-beautifulsoup4
-pypdf
-pydantic
+   uvicorn
+   langchain
+   langchain-google-genai
+   langchain-community
+   faiss-cpu
+   beautifulsoup4
+   pypdf
+   pydantic
